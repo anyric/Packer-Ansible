@@ -1,0 +1,26 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "us-east-2",
+      "source_ami": "ami-916f59f4",
+      "instance_type": "t2.micro",
+      "ssh_username": "ubuntu",
+      "ami_name": "packer-ubuntu-sever-demo-{{isotime | clean_ami_name}}",
+      "ami_description": "A demo AMI created using packer",
+      "tags": {
+              "role": "packerServerDemo",
+              "version":"v0.1"
+      },
+      "run_tags": {
+            "role": "packerBuildDemo"
+      }
+    }
+  ]
+}
