@@ -1,0 +1,53 @@
+- host: all
+  become: yes
+  become_method: sudo
+  remote_user: ubuntu
+  tasks:
+    - name: Updating OS
+      apt: update_cache: yes
+
+    - name: Installing python3 and dependancies
+      apt:
+        name: {{item}}
+        state: latest
+        with_items:
+          - python3
+          - python3-pip
+          - python3.4-venv
+
+    - name: Installing nginx and gunicorn servers
+      apt:
+        name: {{item}}
+        state: latest
+        update_cache: yes
+        with_items:
+          - nginx
+          - gunicorn
+
+    - name: Installing Nginx
+      apt:
+        name: nginx
+        update_cache: yes
+
+    - name: Starting on boot
+      service:
+        name: {{item}}
+        enabled: yes
+        state: started
+        with_items:
+          - nginx
+          - gunicorn
+
+    - name: Cloning App github repo
+      git:
+        clone: yes
+        repo: https://github.com/anyric/Yummy-Recipes-Api.git
+        dest: /home/ubuntu
+    
+    - name: Changing directory to app folder
+      command: cp Yummy-Recipes-Api
+    
+    - name: Installing requirements.txt
+      pip:
+        requirements: /home/ubuntu/requirements.txt
+        extra_args: "-e"

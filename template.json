@@ -22,5 +22,15 @@
             "role": "packerBuildDemo"
       }
     }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "script":"ansible.sh"
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "./playbook.yml"
+    }
   ]
 }
