@@ -15,6 +15,7 @@
       "ami_name": "packer-ubuntu-sever-demo-{{isotime | clean_ami_name}}",
       "ami_description": "A demo AMI created using packer",
       "tags": {
+              "name": "Packer Demo",
               "role": "packerServerDemo",
               "version":"v0.1"
       },
