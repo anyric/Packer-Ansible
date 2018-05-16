@@ -29,6 +29,7 @@
 
     - name: Installing requirements.txt
       command: pip3 install -r /home/ubuntu/Yummy-Recipes-Api/requirements.txt
+    #tested upto here above and working
     
     - name: Removing old app.py
       command: rm -rf /home/ubuntu/Yummy-Recipes-Api/app.py
