@@ -31,8 +31,7 @@
 
     - name: Installing requirements.txt
       command: pip3 install -r /home/ubuntu/Yummy-Recipes-Api/requirements.txt
-    #tested upto here above and working
-
+    
     - name: Removing old app.py
       command: rm -rf /home/ubuntu/Yummy-Recipes-Api/app.py
 
@@ -50,7 +49,7 @@
         dest: /etc/nginx/sites-available/yummy.conf
   
     - name: Creating symbolic link
-      command: ln -s /etc/nginx/sites-available/yummy /etc/nginx/sites-enabled/
+      command: ln -s /etc/nginx/sites-available/yummy /etc/nginx/sites-enabled/yummy
     
     - name: Granting firewall access
       command: ufw allow 'Nginx Full'
