@@ -1,0 +1,29 @@
+---
+- name: Updating OS
+  apt: update_cache=yes
+
+- name: Exporting Lang variables
+  shell: |
+    export LANG="en_US.UTF-8"
+    export LC_ALL="en_US.UTF-8"
+    export LC_CTYPE="en_US.UTF-8"
+
+- name: Installing packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python3
+    - python3-pip
+    - virtualenv
+    - nginx
+    - gunicorn
+
+- name: Starting on boot
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  with_items:
+    - nginx
+    - gunicorn

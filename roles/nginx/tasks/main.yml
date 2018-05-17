@@ -1,0 +1,28 @@
+---
+- name: Starting Nginx
+  shell: systemctl start nginx
+
+- name: Creating Nginx Config file
+  shell: | 
+    sudo rm -rf /etc/nginx/sites-available/yummy /etc/nginx/sites-enabled/yummy
+    sudo bash -c 'cat <<EOF> /etc/nginx/sites-available/yummy
+      server {
+              listen 80;
+              location / {
+                  proxy_pass http://127.0.0.1:5000/;
+                  proxy_set_header Host \$host;
+                  proxy_set_header X-Forwarded-Proto \$scheme;
+                  proxy_set_header X-Real-IP \$remote_addr;
+                  proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+              }
+      }
+      EOF'
+    sudo rm -rf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+    sudo ln -s /etc/nginx/sites-available/yummy /etc/nginx/sites-enabled/
+    sudo ufw allow 'Nginx Full'
+
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted
+    enabled: yes

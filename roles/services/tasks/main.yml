@@ -1,0 +1,7 @@
+---
+- name: Starting App
+  shell: |
+    sudo systemctl daemon-reload
+    sudo systemctl enable yummy
+    sudo systemctl start yummy
+    

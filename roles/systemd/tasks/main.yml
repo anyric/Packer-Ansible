@@ -1,0 +1,31 @@
+---
+- name: Creating script for Systemd
+  shell: |
+    sudo bash -c 'cat <<EOF> /home/ubuntu/Yummy-Recipes-Api/yummy.sh
+    #!/bin/bash
+
+    cd /home/ubuntu/Yummy-Recipes-Api
+    source venv/bin/activate
+    sudo pip install flask
+    cd Yummy-Recipes-Api
+    gunicorn --workers 4 --bind 0.0.0.0:5000 app:app
+
+    EOF'
+
+- name: Configuring Systemd services
+  shell: |
+    sudo rm -rf /etc/systemd/system/yummy.service
+    sudo bash -c 'cat <<EOF> /etc/systemd/system/yummy.service
+    [Unit]
+    Description=Gunicorn instance to serve yummy recipe
+    After=network.target
+
+    [Service]
+    User=ubuntu
+    ExecStart=/bin/bash /home/ubuntu/Yummy-Recipes-Api/yummy.sh
+
+    [Install]
+    WantedBy=multi-user.target
+
+    EOF'
+    sudo chmod 755 /etc/systemd/system/yummy.service

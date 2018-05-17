@@ -1,0 +1,21 @@
+---
+- name: Cloning App github repo
+  git: 
+    clone: yes
+    repo: https://github.com/anyric/Yummy-Recipes-Api.git 
+    dest: /home/ubuntu/Yummy-Recipes-Api
+
+- name: Creating virtualenv
+  shell: virtualenv -p python3 /home/ubuntu/Yummy-Recipes-Api/venv
+
+- name: Installing requirements.txt
+  shell: pip3 install -r /home/ubuntu/Yummy-Recipes-Api/requirements.txt
+
+- name: Configuring Host Ip Address
+  shell: |
+    sudo rm -rf app.py
+    sudo bash -c 'cat <<EOF> ./app.py
+    from apps import app
+    if __name__ == "__main__":
+        app.run(host="0.0.0.0", threaded=True)
+    EOF'
