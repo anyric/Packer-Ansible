@@ -2,6 +2,8 @@
   become: yes
   become_method: sudo
   remote_user: ubuntu
+  vars:
+    ansible_python_interpreter: "/usr/bin/python3"
   tasks:
     - name: Updating OS
       apt: update_cache=yes
@@ -30,20 +32,24 @@
     - name: Installing requirements.txt
       command: pip3 install -r /home/ubuntu/Yummy-Recipes-Api/requirements.txt
     #tested upto here above and working
-    
+
     - name: Removing old app.py
       command: rm -rf /home/ubuntu/Yummy-Recipes-Api/app.py
 
-    - name: Configuring app IP address
-      copy: src=app.py des=/home/ubuntu/Yummy-Recipes-Api/app.py
+    - name: Copying app.j2
+      template:
+        src: templates/app.j2
+        dest: /home/ubuntu/Yummy-Recipes-Api/app.py
   
     - name: Removing nginx default.conf
       command: rm -rf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
     - name: Copying nginx configuration
-      template: src=yummy.conf dest=/etc/nginx/sites-available/yummy.conf
-    
-    - name: Creating symb link
+      template:
+        src: templates/yummy.conf
+        dest: /etc/nginx/sites-available/yummy.conf
+  
+    - name: Creating symbolic link
       command: ln -s /etc/nginx/sites-available/yummy /etc/nginx/sites-enabled/
     
     - name: Granting firewall access
@@ -53,21 +59,13 @@
       command: systemctl start nginx
     
     - name: Creating script for Systemd
-      copy: src=yummy.sh des=/home/ubuntu/Yummy-Recipes-Api/yummy.sh
-  
-    - name: Exporting Database URL
-      command: export DATABASE_URL="postgres://postgres:postgres1234@postgresdb.cztrtf3jyreo.us-east-2.rds.amazonaws.com:5432/yummy_api"
-  
-    - name: Creating Systemd service file
-      copy: src=yummy.service /home/ubuntu/Devops/Yummy-Recipes-Api/yummy.service
+      template:
+        src: templates/yummy_script.j2
+        dest: /home/ubuntu/Yummy-Recipes-Api/yummy.sh
 
-    - name: Reloading service Daemon
-      command: systemctl daemon-reload
+    - name: Starting Systemd services
+      template:
+        src: templates/yummy.j2
+        dest: /home/ubuntu/Yummy-Recipes-Api/yummy.service
 
-    - name: Enabling yummy app
-      command: systemctl enable yummy
-    
-    - name: Starting yummy app
-      command: systemctl start yummy
-    
     
