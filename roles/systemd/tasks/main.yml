@@ -14,7 +14,6 @@
 
 - name: Configuring Systemd services
   shell: |
-    sudo rm -rf /etc/systemd/system/yummy.service
     sudo bash -c 'cat <<EOF> /etc/systemd/system/yummy.service
     [Unit]
     Description=Gunicorn instance to serve yummy recipe
